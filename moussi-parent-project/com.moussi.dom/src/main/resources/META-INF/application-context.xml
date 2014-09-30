@@ -1,0 +1,63 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+
+
+<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>META-INF/application.properties</value>
+				<!-- List other property files here -->
+				<!-- value>mail.properties</value -->
+			</list>
+		</property>
+	</bean>
+<bean id="myEmf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+      <property name="dataSource" ref="dataSource" />
+      <property name="packagesToScan" value="com.moussi.dom" />
+      <property name="jpaVendorAdapter">
+         <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+      </property>
+      <property name="jpaProperties">
+         <props>
+            <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+            <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+        	<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+        	<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+        	<prop key="hibernate.ejb.naming_strategy">${hibernate.ejb.naming_strategy}</prop>
+         </props>
+      </property>
+   </bean>
+ 
+ 
+ 
+   <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+      <property name="driverClassName" value="${db.driver}" />
+      <property name="url" value="${db.url}" />
+      <property name="username" value="${db.username}" />
+       <property name="password" value="${db.password}" />
+        </bean>
+   <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+      <property name="entityManagerFactory" ref="myEmf" />
+
+   </bean>
+
+   <tx:annotation-driven />
+ 
+
+   <bean id="persistenceExceptionTranslationPostProcessor"
+
+      class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+
+
+</beans>
